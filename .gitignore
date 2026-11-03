@@ -1,4 +1,5 @@
 XmlSplit-py/.venv
 XmlSplit-py/.idea
 /IatiAnalysisWorkflow/target/
+/IatiAnalysisWorkflow/src/main/resources/config.properties
 /IATI-Parser/target/
