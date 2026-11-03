@@ -29,6 +29,7 @@ public class IATIParser {
     }
             
     private static Set<Triple<String,String,String>> parseXmlFile(File xmlFile) throws IOException, XMLStreamException{
+        System.out.println("checking file "+xmlFile.getAbsolutePath());
         Set<Triple<String,String,String>> retSet=new HashSet<>();
         XMLInputFactory factory = XMLInputFactory.newInstance();
         try (InputStream in = Files.newInputStream(xmlFile.toPath())) {
@@ -123,14 +124,11 @@ public class IATIParser {
     }
     
     private static String escapeCsv(String value) {
-
         if (value == null) {
             return "";
         }
-
         // Double quotation marks inside CSV values
-        String escaped = value.replace("\"", "\"\"");
-
+        String escaped = value.replace("\"", "\"\"").replaceAll("\n", " ").replaceAll("\\\n", " ").replaceAll("\r", " ").replaceAll("\\\r", " ");
         // Quote the value if it contains comma, quote, CR or LF
         if (escaped.contains(",")
                 || escaped.contains("\"")
@@ -139,7 +137,6 @@ public class IATIParser {
 
             return "\"" + escaped + "\"";
         }
-
         return escaped;
     }
     
