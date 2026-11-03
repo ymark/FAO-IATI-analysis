@@ -14,14 +14,15 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Utility application that collects XML files about IATI activities, and copies them in a target folder for further analysis.
  * 
  * @author Yannis Marketakis (marketak 'at' ics 'dot' forth 'dot' gr)
  */
 public class IATIConsolidator {
+    private static final Logger log= LogManager.getLogger(IATIConsolidator.class);
     public static final Path ROOT_FOLDER_WITH_RESOURCES=Path.of("D:/temp/FAO-IATI/iati-data/datasets");
     public static final Path TARGET_FOLDER=Path.of("D:/temp/FAO-IATI/split/more/");
     
@@ -31,7 +32,7 @@ public class IATIConsolidator {
             List<Path> allXmlFiles=stream.filter(Files::isRegularFile)
                                          .filter(path -> path.toString().toLowerCase().endsWith(".xml"))
                                          .collect(Collectors.toList());
-            System.out.println(allXmlFiles.size());
+            log.debug("{} XML files to check",allXmlFiles.size());
             for(Path xmlFile : allXmlFiles){
                 if(isIatiActivityFile(xmlFile.toFile())){
                     Files.copy(xmlFile, TARGET_FOLDER.resolve(xmlFile.getFileName()),StandardCopyOption.REPLACE_EXISTING);
@@ -51,7 +52,7 @@ public class IATIConsolidator {
 //        }
 //    }
     
-    private static boolean isIatiActivityFile(File xmlFile) throws ParserException{
+    private static boolean isIatiActivityFile(File xmlFile){
         XMLInputFactory factory = XMLInputFactory.newInstance();
         factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         factory.setProperty("javax.xml.stream.isSupportingExternalEntities", false);
@@ -85,7 +86,8 @@ public class IATIConsolidator {
         } finally {
             reader.close();
         }}catch(IOException | XMLStreamException ex){
-            throw new ParserException("An error occured while checking if an XML file ('"+xmlFile.getAbsolutePath()+"') is an IATI activity record file", ex);
+            log.error("An error occured while checking if an XML file ('"+xmlFile.getAbsolutePath()+"') is an IATI activity record file", ex);
+            return false;
         }
     }
     
