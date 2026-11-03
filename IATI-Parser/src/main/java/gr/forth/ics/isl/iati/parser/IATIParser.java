@@ -15,7 +15,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.lang3.tuple.Triple;
 
-/**
+/** Parses the contents of IATI Activity records (from multiple XML files) and exports their contents in a CSV file.
+ * 
  * @author Yannis Marketakis (marketak 'at' ics 'dot' forth 'dot' gr)
  */
 public class IATIParser {
@@ -41,80 +42,55 @@ public class IATIParser {
             boolean insideDescription = false;
 
             while (reader.hasNext()) {
-
                 int event = reader.next();
-
                 if (event == XMLStreamConstants.START_ELEMENT) {
-
                     String element = reader.getLocalName();
-
                     switch (element) {
-
                         case "iati-activity":
                             insideActivity = true;
                             identifier = null;
                             title = null;
                             description = null;
                             break;
-
                         case "iati-identifier":
                             if (insideActivity) {
                                 identifier = reader.getElementText().trim();
                             }
                             break;
-
                         case "title":
                             if (insideActivity) {
                                 insideTitle = true;
                             }
                             break;
-
                         case "description":
                             if (insideActivity) {
                                 insideDescription = true;
                             }
                             break;
-
                         case "narrative":
-
                             if (insideActivity) {
-
                                 String text = reader.getElementText().trim();
-
                                 if (insideTitle && title == null) {
                                     title = text;
                                 }
-
                                 if (insideDescription && description == null) {
                                     description = text;
                                 }
                             }
-
                             break;
                     }
 
                 } else if (event == XMLStreamConstants.END_ELEMENT) {
-
                     String element = reader.getLocalName();
-
                     switch (element) {
-
                         case "title":
                             insideTitle = false;
                             break;
-
                         case "description":
                             insideDescription = false;
                             break;
-
                         case "iati-activity":
-
-//                            System.out.println("Identifier: " + identifier);
-//                            System.out.println("Title: " + title);
-//                            System.out.println("Description: " + description);
-//                            System.out.println("--------------------------------");
                             retSet.add(Triple.of(identifier, title, description));
-
                             insideActivity = false;
                             break;
                     }
