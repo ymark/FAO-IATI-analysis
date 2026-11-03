@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 public class IATIConsolidator {
     private static final Logger log= LogManager.getLogger(IATIConsolidator.class);
     public static final Path ROOT_FOLDER_WITH_RESOURCES=Path.of("D:/temp/FAO-IATI/iati-data/datasets");
-    public static final Path TARGET_FOLDER=Path.of("D:/temp/FAO-IATI/split/more/");
+    public static final Path TARGET_FOLDER=Path.of("D:/temp/FAO-IATI/split/");
     
     public static void main(String[] arsg) throws ParserException{
         validityChecks();
@@ -42,15 +42,6 @@ public class IATIConsolidator {
             throw new ParserException("An error occured while consolidating IATI XML files", ex);
         }
     }
-    
-//    private static boolean isIatiActivityFile(File xmlFile) throws ParserException{
-//        try{
-//            Document doc=Jsoup.parse(xmlFile,"UTF-8");
-//            return !doc.select("iati-activities > iati-activity").isEmpty();
-//        }catch(IOException ex){
-//            throw new ParserException("An error occured while checking if an XML file is an IATI activity record file", ex);
-//        }
-//    }
     
     private static boolean isIatiActivityFile(File xmlFile){
         XMLInputFactory factory = XMLInputFactory.newInstance();
