@@ -1,6 +1,5 @@
 package gr.forth.ics.isl.iatianalysisworkflow;
 
-import com.google.common.collect.Multimap;
 import java.io.File;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +16,8 @@ public class IatiAnalysisWorkflow {
         Vocabulary vocab=new Vocabulary();
         
         InformationExtraction informationExtraction=new InformationExtraction();
-        informationExtraction.extractInformationUsingVocabularyOnly(new File("D:/temp/FAO-IATI/iati-info.csv"));
+//        informationExtraction.extractInformationUsingVocabularyOnly(new File("D:/temp/FAO-IATI/iati-info.csv"));
+        informationExtraction.extractEcosystemInformationUsingLLM(new File("D:/temp/FAO-IATI/iati-info.csv"));
         
     }
 }
