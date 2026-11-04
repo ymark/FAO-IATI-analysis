@@ -36,7 +36,7 @@ public class PostAnalysisUtils {
         }
     }
     
-    private static void collectIatiActivityRecordsProperlyClassfied(Path classificationResults, Path sourceIatiRecords, Path prunnedIatiRecords)throws FileNotFoundException, UnsupportedEncodingException, IOException{
+    private static void collectIatiActivityRecordsProperlyClassfied(Path classificationResults, Path sourceIatiRecords, Path prunnedIatiRecords) throws FileNotFoundException, UnsupportedEncodingException, IOException{
         log.info("Collect IATI records already classfied");
         Map<String,String> iatiRecordIds=new HashMap<>();
         CSVParser csvParser= CSVFormat.DEFAULT.parse(new InputStreamReader(new FileInputStream(classificationResults.toFile()), "UTF-8"));
@@ -55,6 +55,16 @@ public class PostAnalysisUtils {
         }
     }
     
+    private static void stage2EcosystemBiomeClassification(Path iatiRecordsWithRealmClassification, Path iatiBiomeClassification)throws FileNotFoundException, UnsupportedEncodingException, IOException{
+        log.info("start stage-2 classification for ecosystem biomes");
+        InformationExtraction informationExtraction=new InformationExtraction();
+        CSVParser csvParser= CSVFormat.DEFAULT.parse(new InputStreamReader(new FileInputStream(iatiRecordsWithRealmClassification.toFile()), "UTF-8"));
+        for(CSVRecord csvRecord : csvParser){
+            String biome=informationExtraction.classifyStage2UsingLlm(csvRecord.get(1), csvRecord.get(2));
+            Results.flushCSVResults(Arrays.asList("\""+csvRecord.get(0)+"\"",biome), iatiBiomeClassification.toFile());
+        }
+    }
+    
     public static void main(String[] args) throws FileNotFoundException, IOException{
 //        pruneUnknownClassfiication(Path.of("D:/temp/FAO-IATI/sample-to-work-on/IATI_ecosystem_classification_LLM.csv"), 
 //                                   Path.of("D:/temp/FAO-IATI/sample-to-work-on/IATI_ecosystem_classification_LLM-prunned.csv"));
@@ -63,6 +73,9 @@ public class PostAnalysisUtils {
 //        collectIatiActivityRecordsProperlyClassfied(Path.of("D:/temp/FAO-IATI/sample-to-work-on/IATI_ecosystem_classification_LLM-prunned.csv"),
 //                                                    Path.of("D:/temp/FAO-IATI/sample-to-work-on/iati-info.csv"),
 //                                                    Path.of("D:/temp/FAO-IATI/sample-to-work-on/iati-info-prunned.csv"));
+
+        stage2EcosystemBiomeClassification(Path.of("D:/temp/FAO-IATI/sample-to-work-on/iati-info-prunned.csv"),
+                                           Path.of("D:/temp/FAO-IATI/sample-to-work-on/IATI_ecosystem_biome_classification_LLM-prunned.csv"));
         
     }
 }

@@ -215,7 +215,7 @@ public class InformationExtraction {
         Results.flushCSVResults(Arrays.asList("\""+recordId+"\"",result), new File(Resources.ECOSYSTEMS_CLASSIFICATION_RESULTS_LLM));
     }
     
-    private String classifyStage2UsingLlm(String recordId, String realm, String text) throws FileNotFoundException, IOException{
+    public String classifyStage2UsingLlm(String realm, String text) throws FileNotFoundException, IOException{
         String prompt="You are an AI agent and your task is to classify one IATI activity record on a particular ecosystem biome. "
                 + "You can use the IUCN Global Ecosystem Typology to identify biomes. The accepted biomes are: "
                 + " "
