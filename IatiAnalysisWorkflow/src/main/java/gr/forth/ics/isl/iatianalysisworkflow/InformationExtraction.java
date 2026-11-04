@@ -56,7 +56,12 @@ public class InformationExtraction {
             if(csvRecord.get(0).equalsIgnoreCase("identifier")){
                 continue;
             }
-            this.classifyUsingLlm(csvRecord.get(0),csvRecord.get(1)+" - "+csvRecord.get(2));
+            if((csvRecord.get(1)+" - "+csvRecord.get(2)).length()<50){
+                log.debug("Skip short description for "+csvRecord.get(0));
+                continue;
+            }else{
+                this.classifyUsingLlm(csvRecord.get(0),csvRecord.get(1)+" - "+csvRecord.get(2));
+            }
         }
     }
         
@@ -193,7 +198,7 @@ public class InformationExtraction {
 
         
         Properties properties=new Properties();
-        try(FileInputStream fileInputStream=new FileInputStream("config.properties")){
+        try(FileInputStream fileInputStream=new FileInputStream("src/main/resources/config.properties")){
             properties.load(fileInputStream);
         }
         
@@ -207,7 +212,7 @@ public class InformationExtraction {
                 .map(outputText -> outputText.text())
                 .reduce("", String::concat);
                 
-        Results.flushCSVResults(Arrays.asList(recordId,result), new File(Resources.ECOSYSTEMS_CLASSIFICATION_RESULTS_LLM));
+        Results.flushCSVResults(Arrays.asList("\""+recordId+"\"",result), new File(Resources.ECOSYSTEMS_CLASSIFICATION_RESULTS_LLM));
     }
 
 }

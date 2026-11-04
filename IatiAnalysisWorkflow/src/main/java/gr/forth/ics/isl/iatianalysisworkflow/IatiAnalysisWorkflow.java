@@ -17,7 +17,7 @@ public class IatiAnalysisWorkflow {
         
         InformationExtraction informationExtraction=new InformationExtraction();
 //        informationExtraction.extractInformationUsingVocabularyOnly(new File("D:/temp/FAO-IATI/iati-info.csv"));
-        informationExtraction.extractEcosystemInformationUsingLLM(new File("D:/temp/FAO-IATI/iati-info.csv"));
+        informationExtraction.extractEcosystemInformationUsingLLM(new File("D:/temp/FAO-IATI/iati-info-pruned.csv"));
         
     }
 }
