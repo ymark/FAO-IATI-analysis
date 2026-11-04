@@ -60,9 +60,9 @@ public class PostAnalysisUtils {
 //                                   Path.of("D:/temp/FAO-IATI/sample-to-work-on/IATI_ecosystem_classification_LLM-prunned.csv"));
         
 
-        collectIatiActivityRecordsProperlyClassfied(Path.of("D:/temp/FAO-IATI/sample-to-work-on/IATI_ecosystem_classification_LLM-prunned.csv"),
-                                                    Path.of("D:/temp/FAO-IATI/sample-to-work-on/iati-info.csv"),
-                                                    Path.of("D:/temp/FAO-IATI/sample-to-work-on/iati-info-prunned.csv"));
+//        collectIatiActivityRecordsProperlyClassfied(Path.of("D:/temp/FAO-IATI/sample-to-work-on/IATI_ecosystem_classification_LLM-prunned.csv"),
+//                                                    Path.of("D:/temp/FAO-IATI/sample-to-work-on/iati-info.csv"),
+//                                                    Path.of("D:/temp/FAO-IATI/sample-to-work-on/iati-info-prunned.csv"));
         
     }
 }

@@ -214,5 +214,65 @@ public class InformationExtraction {
                 
         Results.flushCSVResults(Arrays.asList("\""+recordId+"\"",result), new File(Resources.ECOSYSTEMS_CLASSIFICATION_RESULTS_LLM));
     }
+    
+    private String classifyStage2UsingLlm(String recordId, String realm, String text) throws FileNotFoundException, IOException{
+        String prompt="You are an AI agent and your task is to classify one IATI activity record on a particular ecosystem biome. "
+                + "You can use the IUCN Global Ecosystem Typology to identify biomes. The accepted biomes are: "
+                + " "
+                + "-	Tropical-subtropical forests biome\n" 
+                +"-	Temperate-boreal forests and woodlands biome\n" 
+                +"-	Shrublands and shrubby woodlands biome\n" 
+                +"-	Savannas and grasslands biome\n" 
+                +"-	Deserts and semi-deserts biome\n" 
+                +"-	Polar/alpine (cryogenic) biome\n" 
+                +"-	Intensive land-use biome\n" 
+                +"-	Marine shelf biome\n" 
+                +"-	Pelagic ocean waters biome\n" 
+                +"-	Deep sea floors biome\n" 
+                +"-	Anthropogenic marine biome\n" 
+                +"-	Rivers and streams biome\n" 
+                +"-	Lakes biome\n" 
+                +"-	Artificial wetlands biome\n" 
+                +"-	Subterranean lithic biome\n" 
+                +"-	Anthropogenic subterranean voids biome\n"
+                +"-	Shorelines biome\n" 
+                +"-	Supralittoral coastal biome\n" 
+                +"-	Anthropogenic shorelines biome\n" 
+                +"-	Subterranean freshwaters biome\n" 
+                +"-	Anthropogenic subterranean freshwaters biome\n" 
+                +"-	Semi-confined transitional waters biome\n" 
+                +"-	Brackish tidal biome\n" 
+                +"-	Subterranean tidal biome\n" 
+                +"-	Palustrine wetlands biome"
+                + ". "
+                + " "
+                +" In a previous run, you already identified the realm that this IATI activity record is clasified. "
+                +" Do not provide explanations, reasoning, or confidence. Just provide me the correct biome term. \n"
+                +" "
+                + "You are given the Realm classification of the IATI record and the full description of the IATI record. \n" 
+                +" Provide your classification based on the IATI record description. Use the provided realm classification only if needed. \n" 
+                +"\n\n" 
+                +"INPUT: \n" 
+                +"{{ACTIVITY_RECORD_DESCRIPTION}}  "+text+"\n"
+                +"{{ACTIVITY_RECORD_REALM_CLASSIFICATION}} "+realm ;
 
+
+        
+        Properties properties=new Properties();
+        try(FileInputStream fileInputStream=new FileInputStream("src/main/resources/config.properties")){
+            properties.load(fileInputStream);
+        }
+        
+        OpenAIClient client=OpenAIOkHttpClient.builder().apiKey(properties.getProperty("openai.api.key")).build();
+        ResponseCreateParams params=ResponseCreateParams.builder().model(ChatModel.GPT_5_6_LUNA).input(prompt).build();
+        Response response=client.responses().create(params);
+        String result=response.output().stream()
+                .flatMap(output -> output.message().stream())
+                .flatMap(message -> message.content().stream())
+                .flatMap(content -> content.outputText().stream())
+                .map(outputText -> outputText.text())
+                .reduce("", String::concat);
+                
+        return result;
+    }
 }
